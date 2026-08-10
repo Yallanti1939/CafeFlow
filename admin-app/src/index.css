@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-cafeflow-bg: #F7F3ED;
+  --color-cafeflow-bgSecondary: #EFE7DC;
+  --color-cafeflow-card: #FFFDF9;
+  --color-cafeflow-text: #2C1B18;
+  --color-cafeflow-textMuted: #6F5B52;
+  --color-cafeflow-accent: #6B4226;
+  --color-cafeflow-dark: #3B261C;
+  --color-cafeflow-light: #D8C3A5;
+  --color-cafeflow-cta: #B77945;
+
+  --font-serif: 'Cormorant Garamond', 'Libre Baskerville', serif;
+  --font-sans: 'Inter', 'DM Sans', sans-serif;
+}
+
+body {
+  background-color: #F7F3ED; /* cafeflow.bg */
+  color: #2C1B18; /* cafeflow.text */
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, .font-serif {
+  font-family: 'Cormorant Garamond', 'Libre Baskerville', serif;
+}
+
+.font-sans {
+  font-family: 'Inter', 'DM Sans', sans-serif !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #F7F3ED;
+}
+::-webkit-scrollbar-thumb {
+  background: #D8C3A5;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #6B4226;
+}

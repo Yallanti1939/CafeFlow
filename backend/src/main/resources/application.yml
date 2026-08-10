@@ -1,0 +1,44 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: cafeflow-backend
+  datasource:
+    url: jdbc:postgresql://localhost:5433/cafeflow
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    validate-on-migrate: false
+    repair-on-migrate: true
+    locations: classpath:db/migration
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+# Custom Security Configurations
+cafeflow:
+  jwt:
+    # 512-bit secure secret key
+    secret: 9a6140ba86518a4a58066f7f2b1d6b83f06b997321e05a5a1f6a1e8a4a2f8b5f3a6140ba86518a4a58066f7f2b1d6b83f06b997321e05a5a1f6a1e8a4a2f8b5f
+    expiration-ms: 86400000 # 24 hours
+  otp:
+    expiry-minutes: 5
+    resend-cooldown-seconds: 30
+    max-attempts: 5
+  upload:
+    dir: uploads/products/
+  file-serving:
+    base-url: http://localhost:8080/uploads/products/

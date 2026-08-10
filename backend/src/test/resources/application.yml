@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:cafeflow;MODE=PostgreSQL;DATABASE_TO_UPPER=FALSE;DEFAULT_NULL_ORDERING=HIGH
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+  flyway:
+    enabled: false
+
+# Custom configurations needed by services
+cafeflow:
+  jwt:
+    secret: 9a6140ba86518a4a58066f7f2b1d6b83f06b997321e05a5a1f6a1e8a4a2f8b5f3a6140ba86518a4a58066f7f2b1d6b83f06b997321e05a5a1f6a1e8a4a2f8b5f
+    expiration-ms: 86400000
+  otp:
+    expiry-minutes: 5
+    resend-cooldown-seconds: 30
+    max-attempts: 5
+  upload:
+    dir: target/test-uploads/
+  file-serving:
+    base-url: http://localhost:8080/uploads/products/
