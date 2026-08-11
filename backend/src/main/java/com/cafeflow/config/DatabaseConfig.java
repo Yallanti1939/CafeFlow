@@ -26,15 +26,15 @@ public class DatabaseConfig {
         System.out.println(">>> [CafeFlow] Environment Variable Diagnostics:");
         System.getenv().forEach((k, v) -> {
             String keyUpper = k.toUpperCase();
-            if (keyUpper.contains("DATA") || keyUpper.contains("POSTGRES") || keyUpper.contains("SPRING") || keyUpper.contains("DB") || keyUpper.contains("URL")) {
+            if (keyUpper.contains("DATA") || keyUpper.contains("POSTGRES") || keyUpper.contains("SPRING") || keyUpper.contains("DB") || keyUpper.contains("URL") || keyUpper.contains("UR")) {
                 String val = keyUpper.contains("PASS") || keyUpper.contains("SECRET") ? "******" : v;
                 System.out.println("    " + k + " = " + val);
             }
         });
         System.out.println("=================================================================");
 
-        // Lookup across all potential cloud provider env var keys
-        String envUrl = findEnvVar("SPRING_DATASOURCE_URL", "DATABASE_URL", "POSTGRES_URL", "JDBC_DATABASE_URL", "DB_URL", "RENDER_POSTGRES_URL");
+        // Lookup across all potential cloud provider env var keys including common typos
+        String envUrl = findEnvVar("SPRING_DATASOURCE_URL", "SPRING_DATASOURCE_UR", "DATABASE_URL", "POSTGRES_URL", "JDBC_DATABASE_URL", "DB_URL", "RENDER_POSTGRES_URL");
         String url = (envUrl != null && !envUrl.isBlank()) ? envUrl : dbUrl;
 
         String envUser = findEnvVar("SPRING_DATASOURCE_USERNAME", "DATABASE_USERNAME", "POSTGRES_USER", "DB_USER", "DATABASE_USER");
