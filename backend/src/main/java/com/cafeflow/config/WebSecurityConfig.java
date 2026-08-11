@@ -47,6 +47,8 @@ public class WebSecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                // Public Root & Health Check
+                .requestMatchers("/", "/health", "/api/health").permitAll()
                 // Public Paths
                 .requestMatchers("/api/auth/customer/**").permitAll()
                 .requestMatchers("/api/admin/auth/login", "/api/auth/admin/login").permitAll()
@@ -78,8 +80,8 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Allow connections from common Vite dev server ports 5173 (Customer) and 5174 (Admin)
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:5174"));
+        // Allow all origin patterns for local dev and cloud frontend deployments (Vercel)
+        configuration.setAllowedOriginPatterns(Collections.singletonList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Idempotency-Key", "Cache-Control"));
         configuration.setExposedHeaders(Collections.singletonList("Authorization"));
