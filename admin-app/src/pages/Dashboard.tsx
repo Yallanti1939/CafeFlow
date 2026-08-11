@@ -16,6 +16,12 @@ export default function Dashboard() {
   const [confirmingMap, setConfirmingMap] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
+    const token = localStorage.getItem('admin_token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
     async function loadDashboard() {
       setLoading(true);
       try {
