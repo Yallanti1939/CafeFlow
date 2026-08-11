@@ -22,9 +22,23 @@ public class DatabaseConfig {
     @Bean
     @Primary
     public DataSource dataSource() {
-        String url = dbUrl;
-        String username = dbUser;
-        String password = dbPassword;
+        String envUrl = System.getenv("SPRING_DATASOURCE_URL");
+        if (envUrl == null || envUrl.isBlank()) {
+            envUrl = System.getenv("DATABASE_URL");
+        }
+        String url = (envUrl != null && !envUrl.isBlank()) ? envUrl : dbUrl;
+
+        String envUser = System.getenv("SPRING_DATASOURCE_USERNAME");
+        if (envUser == null || envUser.isBlank()) {
+            envUser = System.getenv("DATABASE_USERNAME");
+        }
+        String username = (envUser != null && !envUser.isBlank()) ? envUser : dbUser;
+
+        String envPass = System.getenv("SPRING_DATASOURCE_PASSWORD");
+        if (envPass == null || envPass.isBlank()) {
+            envPass = System.getenv("DATABASE_PASSWORD");
+        }
+        String password = (envPass != null && !envPass.isBlank()) ? envPass : dbPassword;
 
         // Automatically format postgres:// or postgresql:// URIs into valid JDBC URLs
         if (url.startsWith("postgres://") || url.startsWith("postgresql://")) {
@@ -49,6 +63,8 @@ public class DatabaseConfig {
         } else if (!url.startsWith("jdbc:")) {
             url = "jdbc:" + url;
         }
+
+        System.out.println(">>> [CafeFlow] Initializing PostgreSQL DataSource with URL: " + url + ", User: " + username);
 
         return DataSourceBuilder.create()
                 .driverClassName("org.postgresql.Driver")
