@@ -22,22 +22,25 @@ public class DatabaseConfig {
     @Bean
     @Primary
     public DataSource dataSource() {
-        String envUrl = System.getenv("SPRING_DATASOURCE_URL");
-        if (envUrl == null || envUrl.isBlank()) {
-            envUrl = System.getenv("DATABASE_URL");
-        }
+        System.out.println("=================================================================");
+        System.out.println(">>> [CafeFlow] Environment Variable Diagnostics:");
+        System.getenv().forEach((k, v) -> {
+            String keyUpper = k.toUpperCase();
+            if (keyUpper.contains("DATA") || keyUpper.contains("POSTGRES") || keyUpper.contains("SPRING") || keyUpper.contains("DB") || keyUpper.contains("URL")) {
+                String val = keyUpper.contains("PASS") || keyUpper.contains("SECRET") ? "******" : v;
+                System.out.println("    " + k + " = " + val);
+            }
+        });
+        System.out.println("=================================================================");
+
+        // Lookup across all potential cloud provider env var keys
+        String envUrl = findEnvVar("SPRING_DATASOURCE_URL", "DATABASE_URL", "POSTGRES_URL", "JDBC_DATABASE_URL", "DB_URL", "RENDER_POSTGRES_URL");
         String url = (envUrl != null && !envUrl.isBlank()) ? envUrl : dbUrl;
 
-        String envUser = System.getenv("SPRING_DATASOURCE_USERNAME");
-        if (envUser == null || envUser.isBlank()) {
-            envUser = System.getenv("DATABASE_USERNAME");
-        }
+        String envUser = findEnvVar("SPRING_DATASOURCE_USERNAME", "DATABASE_USERNAME", "POSTGRES_USER", "DB_USER", "DATABASE_USER");
         String username = (envUser != null && !envUser.isBlank()) ? envUser : dbUser;
 
-        String envPass = System.getenv("SPRING_DATASOURCE_PASSWORD");
-        if (envPass == null || envPass.isBlank()) {
-            envPass = System.getenv("DATABASE_PASSWORD");
-        }
+        String envPass = findEnvVar("SPRING_DATASOURCE_PASSWORD", "DATABASE_PASSWORD", "POSTGRES_PASSWORD", "DB_PASSWORD");
         String password = (envPass != null && !envPass.isBlank()) ? envPass : dbPassword;
 
         // Automatically format postgres:// or postgresql:// URIs into valid JDBC URLs
@@ -64,7 +67,7 @@ public class DatabaseConfig {
             url = "jdbc:" + url;
         }
 
-        System.out.println(">>> [CafeFlow] Initializing PostgreSQL DataSource with URL: " + url + ", User: " + username);
+        System.out.println(">>> [CafeFlow] Target JDBC Connection URL: " + url + " (User: " + username + ")");
 
         return DataSourceBuilder.create()
                 .driverClassName("org.postgresql.Driver")
@@ -72,5 +75,15 @@ public class DatabaseConfig {
                 .username(username)
                 .password(password)
                 .build();
+    }
+
+    private String findEnvVar(String... keys) {
+        for (String key : keys) {
+            String val = System.getenv(key);
+            if (val != null && !val.isBlank()) {
+                return val;
+            }
+        }
+        return null;
     }
 }
