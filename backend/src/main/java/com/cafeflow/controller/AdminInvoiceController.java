@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 public class AdminInvoiceController {
 
     private final InvoiceRepository invoiceRepository;
+    private final com.cafeflow.service.InvoiceService invoiceService;
     
     @Value("${cafeflow.upload.dir}")
     private String uploadDir;
@@ -50,7 +51,7 @@ public class AdminInvoiceController {
     }
 
     @GetMapping("/customer/invoices/{orderId}")
-    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<?> getCustomerInvoice(@PathVariable("orderId") Long orderId) {
         Invoice invoice = invoiceRepository.findByOrderId(orderId)
                 .orElse(null);
@@ -71,10 +72,20 @@ public class AdminInvoiceController {
         Invoice invoice = invoiceRepository.findByInvoiceNumber(invoiceNumber)
                 .orElseThrow(() -> new IllegalArgumentException("Invoice not found"));
 
-        // Load file from upload directory
-        // pdfPath usually starts with /uploads/products/invoices/
         String filename = invoiceNumber + ".pdf";
         File file = Paths.get(uploadDir, "invoices", filename).toFile();
+
+        // Always re-generate PDF on download to ensure logo and colorful UI layout are present
+        try {
+            java.nio.file.Files.createDirectories(Paths.get(uploadDir, "invoices"));
+            invoiceService.createPdfInvoice(invoice.getOrder(), invoiceNumber, file.getAbsolutePath());
+        } catch (Exception e) {
+            // Fallback check
+        }
+
+        if (!file.exists()) {
+            file = new File("uploads/products/invoices/" + filename);
+        }
 
         if (!file.exists()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Physical PDF receipt file not found.");

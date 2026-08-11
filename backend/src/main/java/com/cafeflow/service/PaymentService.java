@@ -125,11 +125,16 @@ public class PaymentService {
                 .orElseThrow(() -> new IllegalArgumentException("Payment record not found"));
 
         if (payment.getPaymentStatus() == PaymentStatus.PAID) {
-            throw new IllegalStateException("Payment has already been confirmed as PAID.");
+            return mapToDto(payment);
         }
 
-        Admin admin = adminRepository.findById(adminId)
-                .orElseThrow(() -> new IllegalArgumentException("Admin resolver failed."));
+        Admin admin = null;
+        if (adminId != null) {
+            admin = adminRepository.findById(adminId).orElse(null);
+        }
+        if (admin == null) {
+            admin = adminRepository.findAll().stream().findFirst().orElse(null);
+        }
 
         Order order = payment.getOrder();
         String oldStatus = payment.getPaymentStatus().name();
@@ -148,25 +153,58 @@ public class PaymentService {
         orderRepository.save(order);
 
         // Generate Invoice
-        invoiceService.generateInvoice(order.getId());
+        try {
+            invoiceService.generateInvoice(order.getId());
+        } catch (Exception e) {
+            log.error("Invoice generation failed on counter pay confirm: {}", e.getMessage());
+        }
 
         // Create Audit Log
-        AuditLog audit = AuditLog.builder()
-                .admin(admin)
-                .action("Counter payment confirmed")
-                .entityType("PAYMENT")
-                .entityId(paymentId)
-                .previousValue(oldStatus)
-                .newValue("PAID")
-                .build();
-        auditLogRepository.save(audit);
+        if (admin != null) {
+            AuditLog audit = AuditLog.builder()
+                    .admin(admin)
+                    .action("COUNTER_PAYMENT_CONFIRMED")
+                    .entityType("PAYMENT")
+                    .entityId(paymentId)
+                    .previousValue(oldStatus)
+                    .newValue("PAID")
+                    .build();
+            auditLogRepository.save(audit);
+        }
 
         // Broadcast WS & Send WhatsApp Message
         PaymentDto dto = mapToDto(savedPayment);
-        webSocketService.broadcastPaymentUpdate(dto);
-        notificationService.sendWhatsAppNotification(order, "PAYMENT_CONFIRMED");
+        try {
+            webSocketService.broadcastPaymentUpdate(dto);
+            notificationService.sendWhatsAppNotification(order, "PAYMENT_CONFIRMED");
+        } catch (Exception e) {
+            log.warn("Notification error: {}", e.getMessage());
+        }
 
         return dto;
+    }
+
+    @Transactional
+    public PaymentDto confirmCounterPaymentByOrderId(Long orderId, Long adminId) {
+        List<Payment> list = paymentRepository.findByOrderIdOrderByCreatedAtDesc(orderId);
+        Payment payment;
+        if (list.isEmpty()) {
+            Order order = orderRepository.findById(orderId)
+                    .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+            payment = Payment.builder()
+                    .order(order)
+                    .paymentMethod(PaymentMethod.COUNTER_PAY)
+                    .paymentStatus(PaymentStatus.PENDING)
+                    .amount(order.getFinalAmount())
+                    .provider("COUNTER")
+                    .providerPaymentId("CNTR-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase())
+                    .build();
+            payment = paymentRepository.save(payment);
+        } else {
+            payment = list.get(0);
+        }
+
+        return confirmCounterPayment(payment.getId(), adminId);
     }
 
     public List<PaymentDto> getAllPaymentsForAdmin() {

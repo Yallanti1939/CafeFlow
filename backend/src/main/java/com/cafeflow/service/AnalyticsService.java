@@ -23,20 +23,30 @@ public class AnalyticsService {
         private final ProductFeedbackRepository productFeedbackRepository;
 
         public Map<String, Object> getDashboardKPIs() {
-                LocalDateTime startOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
-                LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+                LocalDate today = LocalDate.now();
 
                 List<Order> allOrders = orderRepository.findAll();
                 List<Order> todayOrders = allOrders.stream()
-                                .filter(o -> o.getCreatedAt().isAfter(startOfDay)
-                                                && o.getCreatedAt().isBefore(endOfDay))
+                                .filter(o -> o.getCreatedAt() != null && o.getCreatedAt().toLocalDate().equals(today))
                                 .collect(Collectors.toList());
 
-                // Today's Revenue (Paid orders)
-                BigDecimal todayRevenue = todayOrders.stream()
-                                .filter(o -> o.getPaymentStatus() == PaymentStatus.PAID)
+                // Today's Revenue from Paid Orders placed today
+                BigDecimal todayOrderRevenue = allOrders.stream()
+                                .filter(o -> o.getPaymentStatus() == PaymentStatus.PAID &&
+                                             o.getCreatedAt() != null && o.getCreatedAt().toLocalDate().equals(today))
                                 .map(Order::getFinalAmount)
                                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                // Today's Revenue from Payments verified/paid today (includes counter pay cash collected today)
+                List<Payment> allPayments = paymentRepository.findAll();
+                BigDecimal todayPaymentRevenue = allPayments.stream()
+                                .filter(p -> p.getPaymentStatus() == PaymentStatus.PAID &&
+                                             p.getVerifiedAt() != null && p.getVerifiedAt().toLocalDate().equals(today))
+                                .map(Payment::getAmount)
+                                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                // Max of order revenue or payment verified revenue
+                BigDecimal finalTodayRevenue = todayOrderRevenue.max(todayPaymentRevenue);
 
                 // Pending Orders (placed, confirmed, preparing, ready)
                 long pendingOrders = allOrders.stream()
@@ -65,7 +75,7 @@ public class AnalyticsService {
                                 .orElse(0.0);
 
                 Map<String, Object> kpis = new HashMap<>();
-                kpis.put("todayRevenue", todayRevenue);
+                kpis.put("todayRevenue", finalTodayRevenue);
                 kpis.put("todayOrdersCount", todayOrders.size());
                 kpis.put("pendingOrdersCount", pendingOrders);
                 kpis.put("completedOrdersCount", completedOrders);
@@ -77,6 +87,7 @@ public class AnalyticsService {
 
         public Map<String, Object> getAdvancedAnalytics() {
                 List<Order> allOrders = orderRepository.findAll();
+                List<Payment> allPayments = paymentRepository.findAll();
 
                 // Sales by payment method
                 Map<String, Long> paymentMethodCounts = allOrders.stream()
@@ -120,17 +131,23 @@ public class AnalyticsService {
                 List<Map<String, Object>> dailySales = new ArrayList<>();
                 for (int i = 6; i >= 0; i--) {
                         LocalDate date = LocalDate.now().minusDays(i);
-                        LocalDateTime start = LocalDateTime.of(date, LocalTime.MIN);
-                        LocalDateTime end = LocalDateTime.of(date, LocalTime.MAX);
 
-                        BigDecimal salesVal = allOrders.stream()
-                                        .filter(o -> o.getCreatedAt().isAfter(start) && o.getCreatedAt().isBefore(end)
-                                                        && o.getPaymentStatus() == PaymentStatus.PAID)
+                        BigDecimal orderSales = allOrders.stream()
+                                        .filter(o -> o.getPaymentStatus() == PaymentStatus.PAID &&
+                                                     o.getCreatedAt() != null && o.getCreatedAt().toLocalDate().equals(date))
                                         .map(Order::getFinalAmount)
                                         .reduce(BigDecimal.ZERO, BigDecimal::add);
 
+                        BigDecimal paymentSales = allPayments.stream()
+                                        .filter(p -> p.getPaymentStatus() == PaymentStatus.PAID &&
+                                                     p.getVerifiedAt() != null && p.getVerifiedAt().toLocalDate().equals(date))
+                                        .map(Payment::getAmount)
+                                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                        BigDecimal salesVal = orderSales.max(paymentSales);
+
                         long orderCount = allOrders.stream()
-                                        .filter(o -> o.getCreatedAt().isAfter(start) && o.getCreatedAt().isBefore(end))
+                                        .filter(o -> o.getCreatedAt() != null && o.getCreatedAt().toLocalDate().equals(date))
                                         .count();
 
                         Map<String, Object> dayMap = new HashMap<>();

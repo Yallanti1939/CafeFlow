@@ -29,34 +29,46 @@ export default function OrdersList() {
   const handleUpdateStatus = async (orderId: number, nextStatus: string) => {
     setUpdatingMap(prev => ({ ...prev, [orderId]: true }));
     try {
-      const notes = prompt("Enter kitchen note (optional):") || `Updated status to ${nextStatus}`;
+      // Immediate 1-click status update without browser popups/prompts
+      const notes = `Updated status to ${nextStatus}`;
       await orderService.updateOrderStatus(orderId, nextStatus, notes);
       
-      // Update local state
+      // Update local state smoothly
       setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: nextStatus as any } : o));
-      alert(`Order status updated to ${nextStatus}`);
     } catch (e) {
-      alert("Failed to update order status.");
+      console.error("Failed to update order status", e);
     } finally {
       setUpdatingMap(prev => ({ ...prev, [orderId]: false }));
     }
   };
 
   const handleCancelOrder = async (orderId: number) => {
-    const notes = prompt("Enter cancellation reason (required):");
-    if (notes === null) return; // cancelled
-    if (notes.trim() === '') {
-      alert("A cancellation reason is required to audit cancellations.");
-      return;
-    }
-
     setUpdatingMap(prev => ({ ...prev, [orderId]: true }));
     try {
-      await orderService.cancelOrder(orderId, notes);
+      await orderService.cancelOrder(orderId, "Cancelled by Admin");
       setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: 'CANCELLED' } : o));
-      alert("Order cancelled successfully!");
     } catch (e) {
-      alert("Failed to cancel order.");
+      console.error("Failed to cancel order", e);
+    } finally {
+      setUpdatingMap(prev => ({ ...prev, [orderId]: false }));
+    }
+  };
+
+  const handleConfirmPayment = async (orderId: number) => {
+    setUpdatingMap(prev => ({ ...prev, [orderId]: true }));
+    // Optimistic UI update for instant feedback
+    setOrders(prev => prev.map(o => {
+      if (o.id === orderId) {
+        const nextStatus = o.status === 'PLACED' ? 'CONFIRMED' : o.status;
+        return { ...o, paymentStatus: 'PAID', status: nextStatus as any };
+      }
+      return o;
+    }));
+
+    try {
+      await orderService.confirmOrderPayment(orderId);
+    } catch (e) {
+      console.error("Failed to confirm counter payment on server", e);
     } finally {
       setUpdatingMap(prev => ({ ...prev, [orderId]: false }));
     }
@@ -231,7 +243,18 @@ export default function OrdersList() {
                 <div className="bg-cafeflow-bg p-4 rounded-2xl grid grid-cols-2 gap-4 text-xs md:text-sm border border-cafeflow-light/40">
                   <div>
                     <span className="text-cafeflow-textMuted block font-medium">Payment Status</span>
-                    <span className={`font-bold text-sm ${ord.paymentStatus === 'PAID' ? 'text-emerald-700' : 'text-amber-700'}`}>{ord.paymentStatus} ({ord.paymentMethod})</span>
+                    <span className={`font-bold text-sm block ${ord.paymentStatus === 'PAID' ? 'text-emerald-700' : 'text-amber-700'}`}>
+                      {ord.paymentStatus} ({ord.paymentMethod})
+                    </span>
+                    {ord.paymentStatus !== 'PAID' && (
+                      <button
+                        onClick={() => handleConfirmPayment(ord.id)}
+                        disabled={updatingMap[ord.id]}
+                        className="mt-2 inline-flex items-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-extrabold shadow-sm transition-all active:scale-95"
+                      >
+                        <Check className="w-3.5 h-3.5" /> Mark Counter Paid
+                      </button>
+                    )}
                   </div>
                   <div className="text-right">
                     <span className="text-cafeflow-textMuted block font-medium">Total Amount</span>

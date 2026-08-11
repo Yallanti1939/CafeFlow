@@ -109,18 +109,18 @@ export default function Feedback() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-cafeflow-bg flex items-center justify-center px-6">
-        <div className="bg-cafeflow-card border border-cafeflow-light/30 rounded-2xl p-8 max-w-sm w-full text-center space-y-6 shadow-sm">
-          <div className="mx-auto w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center shadow-inner">
-            <CheckCircle className="w-8 h-8 stroke-[2.5]" />
+      <div className="min-h-screen bg-cafeflow-bg flex items-center justify-center px-6 py-16">
+        <div className="bg-cafeflow-card border-2 border-cafeflow-light/40 rounded-3xl p-10 md:p-14 max-w-lg w-full text-center space-y-8 shadow-xl">
+          <div className="mx-auto w-24 h-24 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center shadow-inner">
+            <CheckCircle className="w-14 h-14 stroke-[2.5]" />
           </div>
-          <div className="space-y-2">
-            <h1 className="font-serif text-3xl font-bold text-cafeflow-dark">Thank You!</h1>
-            <p className="text-cafeflow-textMuted text-xs leading-relaxed">Your feedback helps our baristas maintain perfect standards.</p>
+          <div className="space-y-3">
+            <h1 className="font-serif text-4xl md:text-5xl font-bold text-cafeflow-dark">Thank You!</h1>
+            <p className="text-cafeflow-textMuted text-base md:text-lg font-medium leading-relaxed">Your valuable feedback helps our baristas maintain artisanal quality & service excellence.</p>
           </div>
           <button 
             onClick={() => navigate('/')}
-            className="w-full bg-cafeflow-accent text-white font-semibold py-3.5 rounded-lg hover:bg-cafeflow-dark transition-all text-sm"
+            className="w-full bg-cafeflow-accent text-white font-bold py-4 px-6 rounded-2xl hover:bg-cafeflow-dark transition-all text-lg shadow-lg hover:shadow-xl"
           >
             Back to Menu
           </button>
@@ -129,140 +129,172 @@ export default function Feedback() {
     );
   }
 
+  const getRatingLabel = (score: number) => {
+    switch (score) {
+      case 5: return "5/5 — Exceptional 🌟";
+      case 4: return "4/5 — Very Good 👍";
+      case 3: return "3/3 — Average 🙂";
+      case 2: return "2/5 — Needs Improvement 😐";
+      case 1: return "1/5 — Poor 😞";
+      default: return "";
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-cafeflow-bg text-cafeflow-text pb-20">
+    <div className="min-h-screen bg-cafeflow-bg text-cafeflow-text pb-24">
       {/* Header */}
       <header className="sticky top-0 z-45 bg-cafeflow-bg/95 backdrop-blur-md border-b border-cafeflow-light/30">
-        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-20 h-20 flex items-center justify-between">
+        <div className="w-full px-6 sm:px-10 lg:px-16 xl:px-20 h-24 flex items-center justify-between">
           <button 
             onClick={() => navigate(`/track-order/${order.orderIdFormatted}`)}
-            className="flex items-center gap-2 text-base md:text-lg font-bold text-cafeflow-dark hover:text-cafeflow-accent transition-colors"
+            className="flex items-center gap-2 text-lg font-bold text-cafeflow-dark hover:text-cafeflow-accent transition-colors"
           >
-            <ChevronLeft className="w-6 h-6" /> Live Tracker
+            <ChevronLeft className="w-7 h-7" /> Live Tracker
           </button>
 
-          <span className="font-serif text-2xl md:text-3xl font-bold text-cafeflow-dark">Feedback & Reviews</span>
+          <span className="font-serif text-3xl md:text-4xl font-bold text-cafeflow-dark">Feedback & Reviews</span>
           <div className="w-8 h-8" />
         </div>
       </header>
 
-      <main className="w-full px-6 sm:px-10 lg:px-16 xl:px-20 mt-8">
-        <div className="space-y-2 mb-6">
-          <span className="text-[10px] font-bold text-cafeflow-accent uppercase tracking-widest">Share Experience</span>
-          <h1 className="font-serif text-3xl font-bold text-cafeflow-dark">Feedback & Reviews</h1>
+      <main className="w-full px-6 sm:px-10 lg:px-16 xl:px-20 mt-10 space-y-8">
+        <div className="space-y-2">
+          <span className="text-xs font-bold text-cafeflow-accent uppercase tracking-widest">Share Your Experience</span>
+          <h1 className="font-serif text-4xl md:text-5xl font-bold text-cafeflow-dark">Feedback & Reviews</h1>
+          <p className="text-cafeflow-textMuted text-base font-medium">Order Reference: <span className="font-bold text-cafeflow-dark">{order.orderIdFormatted}</span></p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Section 1: Overall Experience */}
-          <div className="bg-cafeflow-card border border-cafeflow-light/30 rounded-xl p-6 shadow-sm space-y-5">
-            <h3 className="font-serif text-lg font-bold text-cafeflow-dark border-b border-cafeflow-light/20 pb-2">Overall Rating</h3>
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {/* Section 1: Overall Experience (Enlarged) */}
+          <div className="bg-cafeflow-card border-2 border-cafeflow-light/40 rounded-3xl p-8 md:p-10 shadow-lg space-y-8">
+            <h3 className="font-serif text-2xl md:text-3xl font-bold text-cafeflow-dark border-b border-cafeflow-light/30 pb-4">Overall Experience</h3>
             
-            <div className="space-y-4">
+            <div className="space-y-8">
               {/* Overall Star selection */}
-              <div className="space-y-2">
-                <span className="text-xs font-semibold text-cafeflow-textMuted uppercase tracking-wider">Overall Experience</span>
-                <div className="flex gap-1.5 text-amber-400">
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm md:text-base font-bold text-cafeflow-dark uppercase tracking-wider">Overall Experience</span>
+                  <span className="text-xs md:text-sm font-extrabold text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">
+                    {getRatingLabel(overallRating)}
+                  </span>
+                </div>
+                <div className="flex gap-3 text-amber-400">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
                       type="button"
                       onClick={() => setOverallRating(star)}
-                      className="p-1 hover:scale-110 transition-transform"
+                      className="p-1 hover:scale-125 transition-transform"
                     >
-                      <Star className={`w-7 h-7 ${star <= overallRating ? 'fill-current' : 'stroke-[1.5]'}`} />
+                      <Star className={`w-9 h-9 md:w-11 md:h-11 ${star <= overallRating ? 'fill-current' : 'stroke-[1.5]'}`} />
                     </button>
                   ))}
                 </div>
               </div>
 
               {/* Service Star selection */}
-              <div className="space-y-2">
-                <span className="text-xs font-semibold text-cafeflow-textMuted uppercase tracking-wider">Service Quality</span>
-                <div className="flex gap-1.5 text-amber-400">
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm md:text-base font-bold text-cafeflow-dark uppercase tracking-wider">Service & Hospitality</span>
+                  <span className="text-xs md:text-sm font-extrabold text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">
+                    {getRatingLabel(serviceRating)}
+                  </span>
+                </div>
+                <div className="flex gap-3 text-amber-400">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
                       type="button"
                       onClick={() => setServiceRating(star)}
-                      className="p-1 hover:scale-110 transition-transform"
+                      className="p-1 hover:scale-125 transition-transform"
                     >
-                      <Star className={`w-7 h-7 ${star <= serviceRating ? 'fill-current' : 'stroke-[1.5]'}`} />
+                      <Star className={`w-9 h-9 md:w-11 md:h-11 ${star <= serviceRating ? 'fill-current' : 'stroke-[1.5]'}`} />
                     </button>
                   ))}
                 </div>
               </div>
 
               {/* Comment text box */}
-              <div className="space-y-2">
-                <label htmlFor="overall-comment" className="text-xs font-semibold text-cafeflow-textMuted uppercase tracking-wider">Write comments</label>
+              <div className="space-y-3">
+                <label htmlFor="overall-comment" className="text-sm font-bold text-cafeflow-dark uppercase tracking-wider block">Write Detailed Review</label>
                 <textarea
                   id="overall-comment"
-                  rows={3}
-                  placeholder="Share details about flavor profile, packaging, or timing..."
+                  rows={4}
+                  placeholder="Share details about coffee flavor, packaging quality, or barista timing..."
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
-                  className="w-full bg-cafeflow-bg border border-cafeflow-light/60 rounded p-3 text-xs focus:outline-none focus:border-cafeflow-accent transition-all"
+                  className="w-full bg-cafeflow-bg border border-cafeflow-light/60 rounded-2xl p-5 text-sm md:text-base font-medium focus:outline-none focus:border-cafeflow-accent focus:ring-2 focus:ring-cafeflow-accent/20 transition-all shadow-inner"
                 />
               </div>
 
               {/* Recommendation checkbox */}
-              <label className="flex items-center gap-3 cursor-pointer pt-2">
+              <label className="flex items-center gap-4 cursor-pointer pt-2 bg-cafeflow-bg p-4 rounded-2xl border border-cafeflow-light/40">
                 <input 
                   type="checkbox"
                   checked={recommend}
                   onChange={(e) => setRecommend(e.target.checked)}
-                  className="rounded border-cafeflow-light text-cafeflow-accent focus:ring-cafeflow-accent w-4 h-4"
+                  className="rounded border-cafeflow-light text-cafeflow-accent focus:ring-cafeflow-accent w-5 h-5"
                 />
-                <span className="text-xs text-cafeflow-textMuted font-medium flex items-center gap-1"><ThumbsUp className="w-3.5 h-3.5 text-cafeflow-cta" /> I would recommend CafeFlow to others.</span>
+                <span className="text-sm md:text-base text-cafeflow-dark font-bold flex items-center gap-2">
+                  <ThumbsUp className="w-5 h-5 text-cafeflow-cta" /> I would recommend CafeFlow to friends & family.
+                </span>
               </label>
             </div>
           </div>
 
           {/* Section 2: Items specific reviews */}
-          <div className="space-y-4">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-cafeflow-textMuted">Review Ordered Items</h3>
+          <div className="space-y-6">
+            <h3 className="text-base font-bold uppercase tracking-wider text-cafeflow-textMuted">Review Ordered Items</h3>
 
             {order.items.map((item) => (
-              <div key={item.id} className="bg-cafeflow-card border border-cafeflow-light/30 rounded-xl p-6 shadow-sm space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="font-serif font-bold text-sm text-cafeflow-dark">{item.productName}</span>
-                  <div className="flex gap-1 text-amber-400">
+              <div key={item.id} className="bg-cafeflow-card border-2 border-cafeflow-light/40 rounded-3xl p-8 shadow-md space-y-5">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                  <div>
+                    <h4 className="font-serif font-bold text-xl md:text-2xl text-cafeflow-dark">{item.productName} × {item.quantity}</h4>
+                    {item.customizations && item.customizations.length > 0 && (
+                      <p className="text-xs md:text-sm text-cafeflow-textMuted mt-1">
+                        Customs: {item.customizations.map(c => c.customizationOptionName).join(', ')}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex gap-2 text-amber-400">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
                         key={star}
                         type="button"
                         onClick={() => handleProductRatingChange(item.id, star)}
-                        className="p-0.5 hover:scale-105 transition-transform"
+                        className="p-1 hover:scale-110 transition-transform"
                       >
-                        <Star className={`w-5 h-5 ${star <= (productRatings[item.id]?.rating || 5) ? 'fill-current' : 'stroke-[1.5]'}`} />
+                        <Star className={`w-7 h-7 md:w-8 md:h-8 ${star <= (productRatings[item.id]?.rating || 5) ? 'fill-current' : 'stroke-[1.5]'}`} />
                       </button>
                     ))}
                   </div>
                 </div>
 
                 <textarea
-                  placeholder="Rate flavor, temperature, or customization modifiers..."
+                  placeholder="Rate flavor intensity, temperature, or custom syrup ratio..."
                   value={productRatings[item.id]?.comment || ''}
                   onChange={(e) => handleProductCommentChange(item.id, e.target.value)}
                   rows={2}
-                  className="w-full bg-cafeflow-bg border border-cafeflow-light/60 rounded p-2.5 text-xs focus:outline-none focus:border-cafeflow-accent transition-all"
+                  className="w-full bg-cafeflow-bg border border-cafeflow-light/60 rounded-xl p-4 text-xs md:text-sm font-medium focus:outline-none focus:border-cafeflow-accent transition-all"
                 />
               </div>
             ))}
           </div>
 
-          {/* Submit Action */}
+          {/* Submit Action (Enlarged) */}
           <button
             type="submit"
             disabled={submitting}
-            className="w-full bg-cafeflow-cta text-white font-semibold py-4 rounded-lg shadow hover:bg-cafeflow-accent hover:shadow-md transition-all flex items-center justify-center gap-2 text-sm"
+            className="w-full bg-cafeflow-cta hover:bg-cafeflow-accent text-white font-bold py-5 px-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-3 text-lg md:text-xl"
           >
             {submitting ? (
               <>
-                <RefreshCw className="w-4 h-4 animate-spin" /> Submitting...
+                <RefreshCw className="w-6 h-6 animate-spin" /> Submitting Your Review...
               </>
             ) : (
-              'Submit Review'
+              'Submit Review & Experience'
             )}
           </button>
         </form>

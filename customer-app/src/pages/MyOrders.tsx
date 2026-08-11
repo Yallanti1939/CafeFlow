@@ -85,88 +85,88 @@ export default function MyOrders() {
         </div>
       </header>
 
-      <main className="w-full px-6 sm:px-10 lg:px-16 xl:px-20 mt-8 space-y-8">
+      <main className="w-full px-6 sm:px-10 lg:px-16 xl:px-20 mt-10 space-y-10">
         {/* Guest Tracking Form */}
-        <div className="bg-cafeflow-card border border-cafeflow-light/30 rounded-xl p-6 shadow-sm space-y-4">
-          <div className="space-y-1">
-            <h3 className="font-serif text-xl font-bold text-cafeflow-dark">Guest Quick Track</h3>
-            <p className="text-cafeflow-textMuted text-xs">Verify your order status without logging in.</p>
+        <div className="bg-cafeflow-card border border-cafeflow-light/35 rounded-3xl p-8 md:p-10 shadow-md space-y-6">
+          <div className="space-y-2">
+            <h3 className="font-serif text-2xl md:text-3xl font-bold text-cafeflow-dark">Guest Quick Track</h3>
+            <p className="text-cafeflow-textMuted text-sm md:text-base font-medium">Verify your order status instantly without logging in.</p>
           </div>
 
           {publicError && (
-            <div className="bg-red-50 text-red-700 text-xs p-3 rounded border border-red-200">
+            <div className="bg-red-50 text-red-700 text-sm p-4 rounded-2xl border border-red-200 font-semibold">
               {publicError}
             </div>
           )}
 
-          <form onSubmit={handlePublicTrack} className="space-y-3">
-            <div className="grid grid-cols-2 gap-3">
+          <form onSubmit={handlePublicTrack} className="space-y-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input 
                 type="text"
-                placeholder="Order Code (e.g. 9876-ORD-0001001)"
+                placeholder="Order Code (e.g. 9381-ORD-0001001)"
                 value={publicOrderId}
                 onChange={(e) => setPublicOrderId(e.target.value)}
-                className="bg-cafeflow-bg border border-cafeflow-light/60 rounded px-3 py-2 text-xs focus:outline-none focus:border-cafeflow-accent transition-all"
+                className="bg-cafeflow-bg border-2 border-cafeflow-light/60 rounded-2xl px-5 py-4 text-base focus:outline-none focus:border-cafeflow-accent transition-all font-medium"
                 required
               />
               <input 
                 type="tel"
-                placeholder="Mobile Number (e.g. +919876543210)"
+                placeholder="Mobile Number (e.g. 9876543210)"
                 value={publicMobile}
                 onChange={(e) => setPublicMobile(e.target.value)}
-                className="bg-cafeflow-bg border border-cafeflow-light/60 rounded px-3 py-2 text-xs focus:outline-none focus:border-cafeflow-accent transition-all"
+                className="bg-cafeflow-bg border-2 border-cafeflow-light/60 rounded-2xl px-5 py-4 text-base focus:outline-none focus:border-cafeflow-accent transition-all font-medium"
                 required
               />
             </div>
             <button 
               type="submit"
-              className="w-full bg-cafeflow-accent text-white py-2.5 rounded font-semibold text-xs hover:bg-cafeflow-dark transition-all flex items-center justify-center gap-1"
+              className="w-full bg-cafeflow-accent text-white py-4 rounded-2xl font-bold text-base md:text-lg hover:bg-cafeflow-dark transition-all flex items-center justify-center gap-2 shadow-lg"
             >
-              Track Order Status <ArrowRight className="w-3.5 h-3.5" />
+              Track Order Status <ArrowRight className="w-5 h-5" />
             </button>
           </form>
         </div>
 
         {/* Logged in History */}
         {authService.isAuthenticated() && (
-          <div className="space-y-4">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-cafeflow-textMuted">Your Order History</h3>
+          <div className="space-y-6">
+            <h3 className="text-base md:text-lg font-bold uppercase tracking-wider text-cafeflow-textMuted">Your Order History</h3>
             
             {loading ? (
-              <div className="space-y-3">
-                {[1, 2].map(n => (
-                  <div key={n} className="h-24 bg-cafeflow-card border border-cafeflow-light/20 rounded-xl animate-pulse" />
+              <div className="space-y-4">
+                {[1, 2, 3].map(n => (
+                  <div key={n} className="h-28 bg-cafeflow-card border border-cafeflow-light/20 rounded-3xl animate-pulse" />
                 ))}
               </div>
             ) : orders.length === 0 ? (
-              <div className="text-center py-10 bg-cafeflow-card rounded-xl border border-cafeflow-light/20 p-6">
-                <Clock className="w-10 h-10 text-cafeflow-light mx-auto mb-2" />
-                <h4 className="font-serif font-bold text-cafeflow-dark text-base mb-0.5">No orders found</h4>
-                <p className="text-cafeflow-textMuted text-xs">You haven't checked out any orders yet.</p>
+              <div className="text-center py-16 bg-cafeflow-card rounded-3xl border border-cafeflow-light/20 p-8 shadow-sm">
+                <Clock className="w-12 h-12 text-cafeflow-light mx-auto mb-3" />
+                <h4 className="font-serif font-bold text-cafeflow-dark text-xl mb-1">No orders found</h4>
+                <p className="text-cafeflow-textMuted text-sm font-medium">You haven't checked out any delicious items yet.</p>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-5">
                 {orders.map((ord) => (
                   <div 
                     key={ord.id}
                     onClick={() => navigate(`/track-order/${ord.orderIdFormatted}`)}
-                    className="bg-cafeflow-card border border-cafeflow-light/35 rounded-xl p-4 shadow-sm hover:shadow hover:border-cafeflow-accent/40 cursor-pointer transition-all flex justify-between items-center"
+                    className="bg-cafeflow-card border border-cafeflow-light/35 rounded-3xl p-6 md:p-8 shadow-sm hover:shadow-md hover:border-cafeflow-accent/50 cursor-pointer transition-all flex justify-between items-center"
                   >
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-bold text-cafeflow-dark">{ord.orderIdFormatted}</span>
-                        <span className={`text-[10px] font-semibold border px-2 py-0.5 rounded-full ${getStatusStyle(ord.status)}`}>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <span className="text-xl md:text-2xl font-extrabold text-cafeflow-dark">{ord.orderIdFormatted}</span>
+                        <span className={`text-xs md:text-sm font-bold border px-3.5 py-1 rounded-full shadow-sm ${getStatusStyle(ord.status)}`}>
                           {ord.status}
                         </span>
                       </div>
-                      <p className="text-xs text-cafeflow-textMuted font-medium">
-                        {new Date(ord.createdAt).toLocaleDateString()} • {ord.items.length} items
+                      <p className="text-sm md:text-base text-cafeflow-textMuted font-semibold">
+                        {new Date(ord.createdAt).toLocaleDateString()} • {ord.items.length} {ord.items.length === 1 ? 'item' : 'items'}
                       </p>
                     </div>
 
                     <div className="text-right space-y-1">
-                      <span className="text-sm font-bold text-cafeflow-dark">₹{ord.finalAmount}</span>
-                      <p className="text-[10px] text-cafeflow-textMuted uppercase font-semibold">{ord.paymentMethod}</p>
+                      <span className="text-2xl md:text-3xl font-extrabold text-cafeflow-dark">₹{ord.finalAmount}</span>
+                      <p className="text-xs md:text-sm text-cafeflow-textMuted uppercase font-bold">{ord.paymentMethod}</p>
                     </div>
                   </div>
                 ))}

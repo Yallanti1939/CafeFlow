@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import OrdersList from './pages/OrdersList';
+import OrderHistory from './pages/OrderHistory';
 import CategoryCrud from './pages/CategoryCrud';
 import ProductCrud from './pages/ProductCrud';
 import CustomizationCrud from './pages/CustomizationCrud';
@@ -30,6 +31,12 @@ export default function App() {
         <Route path="/orders" element={
           <ProtectedRoute>
             <OrdersList />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/order-history" element={
+          <ProtectedRoute>
+            <OrderHistory />
           </ProtectedRoute>
         } />
         

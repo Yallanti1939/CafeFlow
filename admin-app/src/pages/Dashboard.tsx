@@ -17,21 +17,25 @@ export default function Dashboard() {
 
   useEffect(() => {
     async function loadDashboard() {
+      setLoading(true);
       try {
-        const kpiRes = await dashboardService.getKPIs();
-        const analyticsRes = await dashboardService.getAnalytics();
-        const feedRes = await dashboardService.getFeedbackAnalytics();
-        
-        setKpis(kpiRes);
-        setAnalytics(analyticsRes);
-        setFeedback(feedRes);
+        const [kpiRes, analyticsRes, feedRes, allPays] = await Promise.allSettled([
+          dashboardService.getKPIs(),
+          dashboardService.getAnalytics(),
+          dashboardService.getFeedbackAnalytics(),
+          orderService.getAllPayments()
+        ]);
 
-        // Fetch all payment attempts to filter pending counter payments
-        const allPays = await orderService.getAllPayments();
-        const pendingCounter = allPays.filter(
-          p => p.paymentMethod === 'COUNTER_PAY' && p.paymentStatus === 'PENDING'
-        );
-        setPendingPayments(pendingCounter);
+        if (kpiRes.status === 'fulfilled') setKpis(kpiRes.value);
+        if (analyticsRes.status === 'fulfilled') setAnalytics(analyticsRes.value);
+        if (feedRes.status === 'fulfilled') setFeedback(feedRes.value);
+
+        if (allPays.status === 'fulfilled') {
+          const pendingCounter = allPays.value.filter(
+            p => p.paymentMethod === 'COUNTER_PAY' && p.paymentStatus === 'PENDING'
+          );
+          setPendingPayments(pendingCounter);
+        }
       } catch (err) {
         console.error('Failed to load dashboard statistics', err);
       } finally {
@@ -42,9 +46,6 @@ export default function Dashboard() {
   }, []);
 
   const handleConfirmCounterPayment = async (paymentId: number) => {
-    const confirmApprove = window.confirm("Confirm payment of cash received at counter?");
-    if (!confirmApprove) return;
-
     setConfirmingMap(prev => ({ ...prev, [paymentId]: true }));
     try {
       const idemp = `confirm-pay-${paymentId}-${Date.now()}`;
@@ -54,14 +55,14 @@ export default function Dashboard() {
       setPendingPayments(prev => prev.filter(p => p.id !== paymentId));
       
       // Reload stats
-      const kpiRes = await dashboardService.getKPIs();
-      const analyticsRes = await dashboardService.getAnalytics();
+      const [kpiRes, analyticsRes] = await Promise.all([
+        dashboardService.getKPIs(),
+        dashboardService.getAnalytics()
+      ]);
       setKpis(kpiRes);
       setAnalytics(analyticsRes);
-      
-      alert("Payment approved successfully! Order status moved to confirmed.");
     } catch (e) {
-      alert("Failed to approve counter payment.");
+      console.error("Failed to approve counter payment", e);
     } finally {
       setConfirmingMap(prev => ({ ...prev, [paymentId]: false }));
     }

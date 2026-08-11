@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Coffee, LayoutDashboard, ClipboardList, FolderTree, Tag, Sliders, LogOut } from 'lucide-react';
+import { Coffee, LayoutDashboard, ClipboardList, History, FolderTree, Tag, Sliders, LogOut } from 'lucide-react';
 import { authService } from '../services/authService';
 
 export default function Sidebar() {
@@ -12,6 +12,7 @@ export default function Sidebar() {
   const menuItems = [
     { name: 'Dashboard', path: '/', icon: LayoutDashboard, roles: ['SUPER_ADMIN', 'MANAGER'] },
     { name: 'Live Orders', path: '/orders', icon: ClipboardList, roles: ['SUPER_ADMIN', 'MANAGER', 'STAFF'] },
+    { name: 'Order History', path: '/order-history', icon: History, roles: ['SUPER_ADMIN', 'MANAGER', 'STAFF'] },
     { name: 'Categories', path: '/categories', icon: FolderTree, roles: ['SUPER_ADMIN', 'MANAGER'] },
     { name: 'Products', path: '/products', icon: Tag, roles: ['SUPER_ADMIN', 'MANAGER'] },
     { name: 'Customizations', path: '/customizations', icon: Sliders, roles: ['SUPER_ADMIN', 'MANAGER'] },

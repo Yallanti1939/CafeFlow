@@ -33,6 +33,14 @@ export default function Cart() {
     }
   };
 
+  const handleRemoveItem = async (item: any) => {
+    await removeItem(item.productId, item.selectedCustomizations || [], item.id);
+  };
+
+  const handleUpdateQty = async (item: any, newQty: number) => {
+    await updateQuantity(item.productId, item.selectedCustomizations || [], newQty, item.id);
+  };
+
   return (
     <div className="min-h-screen bg-cafeflow-bg text-cafeflow-text pb-20">
       {/* Header */}
@@ -103,7 +111,7 @@ export default function Cart() {
                   <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto pt-4 sm:pt-0 border-t sm:border-t-0 border-cafeflow-light/20">
                     <div className="inline-flex items-center bg-cafeflow-bgSecondary border border-cafeflow-light/50 rounded-full px-3 py-1 gap-2.5 shadow-inner">
                       <button 
-                        onClick={() => updateQuantity(item.productId, item.selectedCustomizations, item.quantity - 1, item.id)}
+                        onClick={() => handleUpdateQty(item, item.quantity - 1)}
                         className="w-8 h-8 rounded-full bg-white text-cafeflow-dark hover:bg-cafeflow-light/50 flex items-center justify-center shadow-sm transition-all active:scale-95 shrink-0"
                         aria-label="Decrease quantity"
                       >
@@ -113,7 +121,7 @@ export default function Cart() {
                         {item.quantity}
                       </span>
                       <button 
-                        onClick={() => updateQuantity(item.productId, item.selectedCustomizations, item.quantity + 1, item.id)}
+                        onClick={() => handleUpdateQty(item, item.quantity + 1)}
                         className="w-8 h-8 rounded-full bg-white text-cafeflow-dark hover:bg-cafeflow-light/50 flex items-center justify-center shadow-sm transition-all active:scale-95 shrink-0"
                         aria-label="Increase quantity"
                       >
@@ -122,8 +130,8 @@ export default function Cart() {
                     </div>
 
                     <button 
-                      onClick={() => removeItem(item.productId, item.selectedCustomizations, item.id)}
-                      className="p-3 hover:bg-red-50 text-red-600 rounded-full transition-colors"
+                      onClick={() => handleRemoveItem(item)}
+                      className="p-3 hover:bg-red-50 text-red-600 rounded-full transition-colors active:scale-95"
                       aria-label="Delete item"
                     >
                       <Trash2 className="w-6 h-6" />

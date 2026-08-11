@@ -119,6 +119,23 @@ public class PaymentController {
         }
     }
 
+    @PatchMapping("/admin/orders/{orderId}/confirm-payment")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'MANAGER', 'STAFF')")
+    public ResponseEntity<?> confirmPaymentByOrderId(
+            @AuthenticationPrincipal Object principal,
+            @PathVariable("orderId") Long orderId) {
+        try {
+            Long adminId = null;
+            if (principal instanceof AdminPrincipal) {
+                adminId = ((AdminPrincipal) principal).getId();
+            }
+            PaymentDto dto = paymentService.confirmCounterPaymentByOrderId(orderId, adminId);
+            return ResponseEntity.ok(dto);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @GetMapping("/admin/payments")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'MANAGER')")
     public ResponseEntity<List<PaymentDto>> getAllPayments() {

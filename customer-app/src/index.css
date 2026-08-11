@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Outfit:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -12,26 +12,26 @@
   --color-cafeflow-light: #D8C3A5;
   --color-cafeflow-cta: #B77945;
 
-  --font-serif: 'Cormorant Garamond', 'Libre Baskerville', serif;
-  --font-sans: 'Inter', 'DM Sans', sans-serif;
+  --font-serif: 'Plus Jakarta Sans', 'Outfit', sans-serif;
+  --font-sans: 'Plus Jakarta Sans', 'Poppins', sans-serif;
+}
+
+* {
+  font-family: 'Plus Jakarta Sans', 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 body {
   background-color: #F7F3ED; /* cafeflow.bg */
   color: #2C1B18; /* cafeflow.text */
-  font-family: 'Inter', sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Poppins', sans-serif;
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4, .font-serif {
-  font-family: 'Cormorant Garamond', 'Libre Baskerville', serif;
-}
-
-.font-sans {
-  font-family: 'Inter', 'DM Sans', sans-serif !important;
+h1, h2, h3, h4, h5, h6, .font-serif, .font-sans {
+  font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif !important;
 }
 
 /* Custom Scrollbar */
@@ -47,4 +47,55 @@ h1, h2, h3, h4, .font-serif {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #6B4226;
+}
+
+/* Bottom-to-Top Travelling Wave Ripple for Coffee Steam Lines */
+@keyframes waveBottomToTop {
+  0% {
+    stroke-dashoffset: 24;
+    opacity: 0.5;
+    transform: skewX(-5deg);
+  }
+  50% {
+    opacity: 1;
+    transform: skewX(7deg);
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0.5;
+    transform: skewX(-5deg);
+  }
+}
+
+.animate-snake-1 {
+  stroke-dasharray: 8 4;
+  animation: waveBottomToTop 1.4s linear infinite;
+  transform-origin: 6px 6px;
+}
+.animate-snake-2 {
+  stroke-dasharray: 8 4;
+  animation: waveBottomToTop 1.4s linear 0.25s infinite;
+  transform-origin: 10px 6px;
+}
+.animate-snake-3 {
+  stroke-dasharray: 8 4;
+  animation: waveBottomToTop 1.4s linear 0.5s infinite;
+  transform-origin: 14px 6px;
+}
+
+/* Smooth In and Out Zoom Effect on Hover */
+@keyframes pulseZoom {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.hover-pulse-zoom:hover {
+  animation: pulseZoom 2.2s ease-in-out infinite;
 }

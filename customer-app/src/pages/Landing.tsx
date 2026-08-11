@@ -193,23 +193,56 @@ export default function Landing() {
         
         <div className="flex-1 w-full flex justify-center md:justify-end">
           <div className="relative group flex items-center justify-center cursor-pointer select-none">
-            {/* Outer Neon Background Halo Aura */}
-            <div className="absolute -inset-6 bg-gradient-to-tr from-cafeflow-cta via-amber-500 to-cafeflow-accent rounded-full blur-3xl opacity-50 group-hover:opacity-100 group-hover:scale-115 transition-all duration-700 pointer-events-none animate-pulse" />
-            
-            {/* Secondary Neon Glow Ring on Hover */}
-            <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-amber-400 via-orange-500 to-amber-600 blur-xl opacity-0 group-hover:opacity-80 transition-opacity duration-500 pointer-events-none" />
+            {/* Soft Subtle Outer Neon Light Aura (Appears OUTSIDE container on hover) */}
+            <div className="absolute -inset-8 bg-gradient-to-tr from-amber-400 via-orange-500 to-amber-600 rounded-full blur-2xl opacity-15 group-hover:opacity-45 group-hover:scale-115 transition-all duration-500 pointer-events-none" />
+            <div className="absolute -inset-3 bg-amber-400/50 rounded-full blur-xl opacity-0 group-hover:opacity-40 transition-all duration-500 pointer-events-none" />
 
-            {/* Round Shape UI Logo Container with Neon Box-Shadow */}
-            <div className="relative w-80 h-80 sm:w-96 sm:h-96 md:w-[460px] md:h-[460px] lg:w-[520px] lg:h-[520px] rounded-full bg-gradient-to-br from-cafeflow-dark via-cafeflow-accent to-[#2A1713] p-6 shadow-[0_0_40px_rgba(183,121,69,0.35)] group-hover:shadow-[0_0_80px_rgba(245,158,11,0.85),0_0_130px_rgba(183,121,69,0.7),inset_0_0_40px_rgba(245,158,11,0.5)] border-[12px] border-cafeflow-card group-active:scale-95 group-hover:scale-[1.03] transition-all duration-500 flex items-center justify-center text-center overflow-hidden">
+            {/* Round Shape UI Logo Container with Soft Outer Neon Box-Shadow */}
+            <div className="relative w-80 h-80 sm:w-96 sm:h-96 md:w-[460px] md:h-[460px] lg:w-[520px] lg:h-[520px] rounded-full bg-gradient-to-br from-cafeflow-dark via-cafeflow-accent to-[#2A1713] p-6 shadow-[0_0_35px_rgba(183,121,69,0.35)] group-hover:shadow-[0_0_50px_rgba(245,158,11,0.5),0_0_90px_rgba(251,146,60,0.35)] border-[12px] border-cafeflow-card transition-shadow duration-500 flex items-center justify-center text-center overflow-hidden">
               
-              {/* Decorative inner glowing circular rings */}
-              <div className="absolute inset-5 rounded-full border border-amber-400/30 group-hover:border-amber-300/80 group-hover:drop-shadow-[0_0_15px_rgba(245,158,11,0.8)] pointer-events-none transition-all duration-500" />
-              <div className="absolute inset-10 rounded-full border-2 border-dashed border-amber-400/35 group-hover:border-amber-300 group-hover:drop-shadow-[0_0_20px_rgba(251,191,36,0.9)] pointer-events-none animate-[spin_40s_linear_infinite] transition-all duration-500" />
-              <div className="absolute inset-16 rounded-full border border-amber-300/20 group-hover:border-amber-400/60 pointer-events-none animate-pulse" />
+              {/* Decorative inner circular rings (Unchanged on hover) */}
+              <div className="absolute inset-5 rounded-full border border-amber-400/30 pointer-events-none" />
+              <div className="absolute inset-10 rounded-full border-2 border-dashed border-amber-400/35 pointer-events-none animate-[spin_40s_linear_infinite]" />
+              <div className="absolute inset-16 rounded-full border border-amber-300/20 pointer-events-none animate-pulse" />
               
-              {/* Center UI Coffee Cup Logo Emblem with Smooth In-and-Out Zoom Effect */}
-              <div className="w-52 h-52 sm:w-64 sm:h-64 md:w-[320px] md:h-[320px] lg:w-[350px] lg:h-[350px] bg-gradient-to-tr from-cafeflow-cta via-amber-500 to-cafeflow-accent rounded-full flex items-center justify-center shadow-[0_0_35px_rgba(183,121,69,0.5)] group-hover:shadow-[0_0_70px_rgba(245,158,11,0.95),0_0_100px_rgba(183,121,69,0.8)] border-4 border-amber-200/50 group-hover:scale-115 group-active:scale-95 transition-all duration-700 ease-in-out z-10 shrink-0">
-                <Coffee className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 lg:w-48 lg:h-48 text-cafeflow-card stroke-[1.75] drop-shadow-[0_0_25px_rgba(255,255,255,0.7)] group-hover:drop-shadow-[0_0_40px_rgba(255,255,255,0.95)] group-hover:scale-110 transition-transform duration-700 ease-in-out" />
+              {/* Center UI Coffee Cup Logo Emblem (Zooms in and out on hover) */}
+              <div className="w-52 h-52 sm:w-64 sm:h-64 md:w-[320px] md:h-[320px] lg:w-[350px] lg:h-[350px] bg-gradient-to-tr from-cafeflow-cta via-amber-500 to-cafeflow-accent rounded-full flex items-center justify-center shadow-[0_0_35px_rgba(183,121,69,0.5)] border-4 border-amber-200/50 z-10 shrink-0 group-hover:animate-[pulseZoom_2.2s_ease-in-out_infinite] transition-transform duration-500">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 lg:w-48 lg:h-48 text-cafeflow-card drop-shadow-[0_0_25px_rgba(255,255,255,0.7)] overflow-visible"
+                >
+                  {/* 3 S-Curve Steam Lines with Snake-like Slithering Wave Motion */}
+                  <g>
+                    <path
+                      d="M 6 6 C 4 4.5, 8 3.5, 6 2 C 4 0.5, 8 -0.5, 6 -2"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      className="animate-snake-1"
+                    />
+                    <path
+                      d="M 10 6 C 8 4.5, 12 3.5, 10 2 C 8 0.5, 12 -0.5, 10 -2"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      className="animate-snake-2"
+                    />
+                    <path
+                      d="M 14 6 C 12 4.5, 16 3.5, 14 2 C 12 0.5, 16 -0.5, 14 -2"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      className="animate-snake-3"
+                    />
+                  </g>
+
+                  {/* Exact original Lucide Coffee Cup Body & Handle */}
+                  <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
+                  <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" />
+                </svg>
               </div>
             </div>
           </div>

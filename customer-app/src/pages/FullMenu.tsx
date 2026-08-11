@@ -193,61 +193,65 @@ export default function FullMenu() {
         </div>
       </aside>
 
-      {/* RIGHT MAIN CONTENT AREA - SCROLLABLE ONLY HERE */}
-      <main className="flex-1 h-screen overflow-y-auto px-6 md:px-12 py-8 space-y-8 bg-cafeflow-bg">
-        {/* TOP HEADER SECTION (Expanded Text Sizes) */}
-        <div className="flex items-center justify-between gap-6 pb-4 border-b border-cafeflow-light/25">
-          <div className="space-y-1.5">
-            <h1 className="font-serif text-5xl lg:text-6xl font-bold text-cafeflow-dark tracking-tight">
-              Crafted for Your Cravings
-            </h1>
-            <p className="font-serif italic text-base md:text-lg text-cafeflow-textMuted">
-              Freshly prepared, thoughtfully customized, and made exactly the way you like it.
-            </p>
+      {/* RIGHT MAIN CONTENT AREA - SCROLLABLE ONLY FOR PRODUCTS */}
+      <main className="flex-1 h-screen overflow-y-auto bg-cafeflow-bg flex flex-col min-w-0">
+        {/* TOP STICKY HEADER SECTION (Spans full remaining width next to sidebar with 15px bottom rounded corners) */}
+        <div className="sticky top-0 z-30 w-full bg-cafeflow-bg/95 backdrop-blur-md px-6 md:px-12 pt-6 pb-6 space-y-6 border-b border-cafeflow-light/30 shadow-sm rounded-b-[15px]">
+          {/* Header Title & Cart */}
+          <div className="flex items-center justify-between gap-6">
+            <div className="space-y-1.5">
+              <h1 className="font-serif text-4xl lg:text-5xl font-bold text-cafeflow-dark tracking-tight">
+                Crafted for Your Cravings
+              </h1>
+              <p className="font-serif italic text-sm md:text-base text-cafeflow-textMuted">
+                Freshly prepared, thoughtfully customized, and made exactly the way you like it.
+              </p>
+            </div>
+
+            {/* Cart Logo / Button */}
+            <button
+              onClick={() => navigate('/cart')}
+              className="relative p-3.5 rounded-2xl bg-cafeflow-card border border-cafeflow-light/50 hover:bg-cafeflow-bgSecondary hover:scale-105 flex items-center justify-center transition-all shadow-md shrink-0"
+              aria-label="View Cart"
+            >
+              <ShoppingBag className="w-7 h-7 text-cafeflow-dark" />
+              {cartItemCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 bg-cafeflow-cta text-white text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-lg border-2 border-white">
+                  {cartItemCount}
+                </span>
+              )}
+            </button>
           </div>
 
-          {/* Cart Logo / Button */}
-          <button
-            onClick={() => navigate('/cart')}
-            className="relative p-4 rounded-2xl bg-cafeflow-card border border-cafeflow-light/50 hover:bg-cafeflow-bgSecondary hover:scale-105 flex items-center justify-center transition-all shadow-md shrink-0"
-            aria-label="View Cart"
-          >
-            <ShoppingBag className="w-8 h-8 text-cafeflow-dark" />
-            {cartItemCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 bg-cafeflow-cta text-white text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-lg border-2 border-white">
-                {cartItemCount}
-              </span>
-            )}
-          </button>
+          {/* SEARCH BAR - Sticky inside header */}
+          <div className="relative w-full">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-cafeflow-textMuted w-5 h-5" />
+            <input
+              type="text"
+              placeholder="Search coffee, tea, burgers, desserts, snacks..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-cafeflow-card border border-cafeflow-light/60 focus:border-cafeflow-accent rounded-2xl px-12 py-3.5 text-sm text-cafeflow-dark placeholder-cafeflow-textMuted focus:outline-none transition-all shadow-sm"
+            />
+          </div>
         </div>
 
-        {/* SEARCH BAR - Full Width Rounded Input */}
-        <div className="relative w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-cafeflow-textMuted w-5 h-5" />
-          <input
-            type="text"
-            placeholder="Search coffee, tea, burgers, desserts, snacks..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-cafeflow-card border border-cafeflow-light/60 focus:border-cafeflow-accent rounded-2xl px-12 py-3.5 text-sm text-cafeflow-dark placeholder-cafeflow-textMuted focus:outline-none transition-all shadow-sm"
-          />
-        </div>
-
-        {/* PRODUCT LIST (ROW CARDS Structure matching wireframe) */}
-        {loading ? (
-          <div className="space-y-4">
-            {[1, 2, 3, 4].map(n => (
-              <div key={n} className="bg-cafeflow-card border border-cafeflow-light/35 rounded-2xl p-6 h-36 animate-pulse space-y-3" />
-            ))}
-          </div>
-        ) : filteredProducts.length === 0 ? (
-          <div className="text-center py-20 bg-cafeflow-card rounded-2xl p-8 border border-cafeflow-light/30">
-            <ShoppingBag className="w-14 h-14 text-cafeflow-light mx-auto mb-3" />
-            <h3 className="text-xl font-serif font-bold text-cafeflow-dark mb-1">No products found</h3>
-            <p className="text-cafeflow-textMuted text-sm">Try selecting another category or clear your search term.</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
+        {/* PRODUCT LIST AREA (Scrolls smoothly below sticky header) */}
+        <div className="px-6 md:px-12 pt-6 pb-12 space-y-6">
+          {loading ? (
+            <div className="space-y-4">
+              {[1, 2, 3, 4].map(n => (
+                <div key={n} className="bg-cafeflow-card border border-cafeflow-light/35 rounded-2xl p-6 h-36 animate-pulse space-y-3" />
+              ))}
+            </div>
+          ) : filteredProducts.length === 0 ? (
+            <div className="text-center py-20 bg-cafeflow-card rounded-2xl p-8 border border-cafeflow-light/30">
+              <ShoppingBag className="w-14 h-14 text-cafeflow-light mx-auto mb-3" />
+              <h3 className="text-xl font-serif font-bold text-cafeflow-dark mb-1">No products found</h3>
+              <p className="text-cafeflow-textMuted text-sm">Try selecting another category or clear your search term.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
             {displayedProducts.map((prod) => (
               <div
                 key={prod.id}
@@ -361,6 +365,7 @@ export default function FullMenu() {
             )}
           </div>
         )}
+        </div>
       </main>
     </div>
   );

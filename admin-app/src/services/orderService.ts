@@ -82,5 +82,10 @@ export const orderService = {
       }
     );
     return response.data;
+  },
+
+  confirmOrderPayment: async (orderId: number): Promise<PaymentAttempt> => {
+    const response = await apiClient.patch<PaymentAttempt>(`/api/admin/orders/${orderId}/confirm-payment`);
+    return response.data;
   }
 };

@@ -84,24 +84,47 @@ export const useCartStore = create<CartState>((set, get) => ({
 
   updateQuantity: async (productId, customizations, quantity, cartItemId) => {
     set({ isLoading: true, error: null });
-    if (authService.isAuthenticated() && cartItemId) {
-      try {
-        const dbCart = await cartService.updateQuantity(cartItemId, quantity);
-        set({ cart: dbCart, isLoading: false });
-      } catch (e: any) {
-        set({ error: e.response?.data || 'Failed to update quantity', isLoading: false });
+    if (authService.isAuthenticated()) {
+      // Find item in cart if cartItemId was not passed directly
+      let targetId = cartItemId;
+      if (!targetId && get().cart && get().cart?.items) {
+        const normCustoms = normalizeCustoms(customizations || []);
+        const match = get().cart?.items.find(
+          i => i.productId === productId && normalizeCustoms(i.selectedCustomizations || []) === normCustoms
+        );
+        if (match) {
+          targetId = match.id;
+        }
+      }
+
+      if (targetId) {
+        try {
+          let dbCart: Cart;
+          if (quantity <= 0) {
+            dbCart = await cartService.deleteItem(targetId);
+          } else {
+            dbCart = await cartService.updateQuantity(targetId, quantity);
+          }
+          set({ cart: dbCart, isLoading: false });
+        } catch (e: any) {
+          console.error('Failed to update/delete cart item', e);
+          set({ error: e.response?.data || 'Failed to update quantity', isLoading: false });
+        }
+      } else {
+        // Fallback refresh cart from backend
+        await get().fetchCart();
       }
     } else {
-      // Guest update
+      // Guest local storage update
       let items = [...get().guestItems];
-      const normCustoms = normalizeCustoms(customizations);
+      const normCustoms = normalizeCustoms(customizations || []);
       const target = items.find(
-        i => i.productId === productId && normalizeCustoms(i.selectedCustomizations) === normCustoms
+        i => i.productId === productId && normalizeCustoms(i.selectedCustomizations || []) === normCustoms
       );
 
       if (target) {
         if (quantity <= 0) {
-          items = items.filter(i => !(i.productId === productId && normalizeCustoms(i.selectedCustomizations) === normCustoms));
+          items = items.filter(i => !(i.productId === productId && normalizeCustoms(i.selectedCustomizations || []) === normCustoms));
         } else {
           target.quantity = quantity;
           target.finalPrice = (target.basePrice + target.customizationPrice) * quantity;

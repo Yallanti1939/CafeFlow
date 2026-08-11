@@ -59,6 +59,13 @@ export const paymentService = {
     return response.data;
   },
 
+  downloadInvoicePdf: async (invoiceNumber: string): Promise<Blob> => {
+    const response = await apiClient.get(`/api/invoices/download/${invoiceNumber}`, {
+      responseType: 'blob',
+    });
+    return response.data;
+  },
+
   getDownloadInvoiceUrl: (invoiceNumber: string): string => {
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
     return `${API_BASE_URL}/api/invoices/download/${invoiceNumber}`;
