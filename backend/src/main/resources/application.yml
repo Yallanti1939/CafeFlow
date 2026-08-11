@@ -5,9 +5,9 @@ spring:
   application:
     name: cafeflow-backend
   datasource:
-    url: jdbc:postgresql://localhost:5433/cafeflow
-    username: postgres
-    password: Saiteja1939
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/cafeflow}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:Saiteja1939}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
