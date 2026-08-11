@@ -59,7 +59,7 @@ export default function TrackOrder() {
 
     setCancelling(true);
     try {
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://cafeflow-backend-8zgz.onrender.com' : 'http://localhost:8080');
       const token = localStorage.getItem('customer_token');
       
       const res = await fetch(`${API_BASE_URL}/api/orders/${order.id}/cancel`, {

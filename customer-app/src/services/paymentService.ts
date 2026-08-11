@@ -67,7 +67,7 @@ export const paymentService = {
   },
 
   getDownloadInvoiceUrl: (invoiceNumber: string): string => {
-    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://cafeflow-backend-8zgz.onrender.com' : 'http://localhost:8080');
     return `${API_BASE_URL}/api/invoices/download/${invoiceNumber}`;
   }
 };

@@ -101,7 +101,7 @@ export default function OrderHistory() {
     setDownloadingId(order.orderIdFormatted);
     try {
       // First get invoice number or construct invoice download URL
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://cafeflow-backend-8zgz.onrender.com' : 'http://localhost:8080');
       const token = localStorage.getItem('admin_token');
 
       // Fetch customer invoice metadata or download directly by order

@@ -135,7 +135,7 @@ export default function ProductCrud() {
         const imgFd = new FormData();
         imgFd.append('file', imageFile);
         
-        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? 'https://cafeflow-backend-8zgz.onrender.com' : 'http://localhost:8080');
         const token = localStorage.getItem('admin_token');
 
         const imgRes = await fetch(`${API_BASE_URL}/api/admin/products/${savedProduct.id}/image`, {
